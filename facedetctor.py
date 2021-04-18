@@ -6,6 +6,8 @@ from urllib.request import Request, urlopen
 
 
 face_encodings = []
+matches = []
+doc_encoding = []
 
 def give_face_encoding(url):
     face_locations = []
@@ -22,6 +24,21 @@ def give_face_encoding(url):
     face_encodings.append(single_face_encoding[0])
     print("Encodings store hua!!!!!!!!!!!!!!!")
 
+def give_doc_encoding(url):
+    face_locations = []
+    print("Doc Requests tak pohocha!!!!!!!!!!!!!!!")
+    # response = requests.get(url)
+    # file = open("test.jpg", "wb")
+    # file.write(response.content)
+    urllib.request.urlretrieve(url, "test.jpg")
+    test_img = face_recognition.load_image_file("test.jpg")
+    face_locations = face_recognition.face_locations(test_img)
+
+    #Create face encodings of detected faces
+    single_face_encoding = face_recognition.face_encodings(test_img, face_locations)
+    doc_encoding.append(single_face_encoding[0])
+    print("Doc Encodings store hua!!!!!!!!!!!!!!!")
+
 def hello(url, frame1, frame2, frame3):
     print(url)
     url= url[:108] + '%2F' + url[109:]
@@ -36,7 +53,7 @@ def hello(url, frame1, frame2, frame3):
     print("Achchha frame2:\n"+frame2)
     # print("Achchha frame5:\n"+frame5)
 
-    give_face_encoding(url)
+    give_doc_encoding(url)
     give_face_encoding(frame1)
     give_face_encoding(frame2)
     give_face_encoding(frame3)
@@ -44,25 +61,29 @@ def hello(url, frame1, frame2, frame3):
     print("Encodings nikal gaye")
     # print(len(face_encodings))  
 
-    doc_encoding = face_encodings[0]
-    face_encodings.pop(0)
+    # doc_encoding = face_encodings[0]
+    # face_encodings.pop(0)
     print("Doc encoding alag se nikal gaya")
     print("Doc encoding: ",doc_encoding)
     print("Face encodings: ", face_encodings)
         
-    matches = face_recognition.compare_faces(face_encodings, doc_encoding, tolerance = 0.6)
+    matches = face_recognition.compare_faces(face_encodings,doc_encoding[0], tolerance = 0.6)
     print("compare ho gaya")
     
     name = 0
     threshold = 0.51
     # Or instead, use the known face with the smallest distance to the new face
-    face_distances = face_recognition.face_distance(face_encodings, doc_encoding)
+    face_distances = face_recognition.face_distance(face_encodings, doc_encoding[0])
     print("distance nikal gaya")
     
     best_match_index = np.argmin(face_distances)
     if face_distances[best_match_index] <= threshold: 
         if matches[best_match_index]:
+            print("Matching value: "+str(face_distances[best_match_index])+"\n")
             name = 1
+    else:
+        print("Matching value: "+str(face_distances[best_match_index])+"\n")
+        
     print(name)    
     print("Done")
 
@@ -71,7 +92,7 @@ def hello(url, frame1, frame2, frame3):
 
 #http://localhost:5000/home?doc=https://firebasestorage.googleapis.com/v0/b/e-kyc-34a84.appspot.com/o/100560013326805107879%2FFurrr.jpg?alt=media&token=1f8c10b3-6b71-4c99-939b-7fa290509fda&frame1=https://firebasestorage.googleapis.com/v0/b/e-kyc-34a84.appspot.com/o/100560013326805107879%2Fsam-bhai1.png?alt=media&token=97a170f5-93df-4367-9492-ab857dee1c47&frame2=https://firebasestorage.googleapis.com/v0/b/e-kyc-34a84.appspot.com/o/100560013326805107879%2Fsam-bhai2.png?alt=media&token=eb6281b6-e523-4c14-9f18-cfd759ff8e7e&frame3=https://firebasestorage.googleapis.com/v0/b/e-kyc-34a84.appspot.com/o/100560013326805107879%2Fsam-bhai3.png?alt=media&token=a2363af5-9d30-45f5-b93a-b16d54b4894e
 
-# https://e12cd4a02385.ngrok.io/home?doc=https://firebasestorage.googleapis.com/v0/b/e-kyc-34a84.appspot.com/o/100560013326805107879%2FFurrr.jpg?alt=media&token=1f8c10b3-6b71-4c99-939b-7fa290509fda&frame1=https://firebasestorage.googleapis.com/v0/b/e-kyc-34a84.appspot.com/o/100560013326805107879%2Fsam-bhai1.png?alt=media&token=97a170f5-93df-4367-9492-ab857dee1c47&frame2=https://firebasestorage.googleapis.com/v0/b/e-kyc-34a84.appspot.com/o/100560013326805107879%2Fsam-bhai2.png?alt=media&token=eb6281b6-e523-4c14-9f18-cfd759ff8e7e&frame3=https://firebasestorage.googleapis.com/v0/b/e-kyc-34a84.appspot.com/o/100560013326805107879%2Fsam-bhai3.png?alt=media&token=a2363af5-9d30-45f5-b93a-b16d54b4894e
+# https://cca8ef139de5.ngrok.io/home?doc=https://firebasestorage.googleapis.com/v0/b/helper-hiring-backend.appspot.com/o/4FgY1qSoTlbUzEu9sDw9yHhslJ73%2FFurr.jpg?alt=media&token=ac077736-5a4a-418e-9c61-462c221dbf5c&frame1=https://firebasestorage.googleapis.com/v0/b/helper-hiring-backend.appspot.com/o/4FgY1qSoTlbUzEu9sDw9yHhslJ73%2Fimage0?alt=media&token=46cd0667-9b39-446b-9832-4552c1d2398b&frame2=https://firebasestorage.googleapis.com/v0/b/helper-hiring-backend.appspot.com/o/4FgY1qSoTlbUzEu9sDw9yHhslJ73%2Fimage1?alt=media&token=62a4f0f6-cfd0-41ea-91fa-116b9581a899&frame3=https://firebasestorage.googleapis.com/v0/b/helper-hiring-backend.appspot.com/o/4FgY1qSoTlbUzEu9sDw9yHhslJ73%2Fimage2?alt=media&token=2195c397-77c6-412a-ba81-5d6180c89198
 # ngrok http 5000
 
 # https://firebasestorage.googleapis.com/v0/b/helper-hiring-backend.appspot.com/o/frame%40gmail.com%2Fimage0?alt=media&token=0f4fc0b9-faac-4277-ab0d-0093445d21eb
